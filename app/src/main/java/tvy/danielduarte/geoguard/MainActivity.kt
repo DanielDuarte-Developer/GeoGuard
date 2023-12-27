@@ -1,6 +1,7 @@
 package tvy.danielduarte.elderylocationprogram
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -9,7 +10,10 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this) // Initializing the client
         currentLocation = getCurrentLocation() as Location // Getting the location "returns a single location fix" I'm assuming it is a "Location" object
+        startLocationUpdates()
     }
 
     //Checks if the app doesn't have the necessary permissions, if not, asks for them, then gets the current location
@@ -43,9 +48,25 @@ class MainActivity : AppCompatActivity() {
             return
         }
         fusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, null)
-
     }
 
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            super.onLocationResult(locationResult)
+            if (locationResult.lastLocation != null) {
+                currentLocation = locationResult.lastLocation
+                distanceFromCenter(currentLocation!!, center!!)
+            }
+        }
+    }
+    @SuppressLint("MissingPermission", "SuspiciousIndentation")
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(5000) // Intervalo em milissegundos para atualizações de localização (aqui, a cada 10 segundos)
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+    }
     // Function called by the click of "btnCenter" sets the current device location to be the center of the perimeter in the "center" variable
     fun setPerimeterCenter(view: View) {
         center = getCurrentLocation() as Location
@@ -60,7 +81,6 @@ class MainActivity : AppCompatActivity() {
 
     // Checks the distance of the device from the center CURRENTLY UNIMPLEMMENTED needs a timer for it to be called from time to time same with the method get current location
     private fun distanceFromCenter(currentLocation: Location, center: Location)  {
-
         return checkIfOutOfBounds(currentLocation.distanceTo(center), radius!!)
     }
 
