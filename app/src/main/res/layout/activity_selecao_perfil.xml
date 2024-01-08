@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SelecaoPerfil">
+
+    <LinearLayout
+        android:id="@+id/lnPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="0"
+        android:layout_weight=".66"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="0"
+            android:layout_weight=".33"
+            android:textAlignment="center"
+            android:textSize="30dp"
+            android:text="Escolher Perfil" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lnCriarPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnCriarPerfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Criar Perfil"
+            android:onClick="criarPerfil"/>
+    </LinearLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
