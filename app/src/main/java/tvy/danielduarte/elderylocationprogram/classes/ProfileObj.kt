@@ -2,12 +2,14 @@ package tvy.danielduarte.elderylocationprogram
 
 import android.graphics.Bitmap
 import android.location.Location
+import tvy.danielduarte.elderylocationprogram.classes.GeoFenceObj
+import tvy.danielduarte.elderylocationprogram.classes.NotificationTypeObj
 
-class ProfileObj (Nome: String, Imagem: Bitmap, LocallizacaoAtual: Location, CentroPerimetro: Location, RaioPerimetro:Double, TipoNotificacao: Int){
-    val nome: String = Nome
-    val imagem: Bitmap = Imagem
-    val localizacaoAtual: Location = LocallizacaoAtual
-    val centroPerimetro: Location = CentroPerimetro
-    val raioPerimetro: Double = RaioPerimetro
-    val tipoNotificacao: Int = TipoNotificacao
+class ProfileObj (Name: String, Image: Bitmap, GeoFenceObj: GeoFenceObj, NotificationType: NotificationTypeObj){
+    var name: String = Name
+    var image: Bitmap = Image
+    var geoFenceObj: GeoFenceObj = GeoFenceObj
+    var notificationType: NotificationTypeObj = NotificationType
+
+
 }
