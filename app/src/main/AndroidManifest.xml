@@ -16,10 +16,10 @@
         android:theme="@style/Theme.ElderyLocationProgram"
         tools:targetApi="31">
         <activity
-            android:name=".SingleProfileActualLocation"
+            android:name=".Profile"
             android:exported="false" />
         <activity
-            android:name=".SingleProfile"
+            android:name=".Settings"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
