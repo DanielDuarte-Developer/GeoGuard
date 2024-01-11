@@ -15,6 +15,7 @@ class SelecaoPerfil : AppCompatActivity() {
         val novoBtn = LayoutInflater.from(this).inflate(R.layout.selecionar_perfil,null)
         novoBtn.findViewById<TextView>(R.id.txtEscolherPerfil).setOnClickListener(View.OnClickListener { v ->
 
+        }
     }
 
     fun criarPerfil(view: View) {
