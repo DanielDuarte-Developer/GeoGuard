@@ -1,6 +1,11 @@
 package tvy.danielduarte.elderylocationprogram.classes
 
-import android.content.Intent
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import androidx.core.content.ContextCompat.getSystemService
+
 
 class NotificationTypeObj(Message:Boolean, Email:Boolean, Notification:Boolean) {
     var message:Boolean = Message
@@ -15,7 +20,9 @@ class NotificationTypeObj(Message:Boolean, Email:Boolean, Notification:Boolean) 
 
     }
 
-    fun sendNotification(){
+    fun sendNotification(message:String){
 
     }
+
+
 }

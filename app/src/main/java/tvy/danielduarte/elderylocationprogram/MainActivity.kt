@@ -1,13 +1,19 @@
 package tvy.danielduarte.elderylocationprogram
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import tvy.danielduarte.elderylocationprogram.classes.NotificationService
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         textView = findViewById<TextView>(R.id.textView);
         checkPerms()
+        createNotificationChannel()
     }
 
     private fun checkPerms(){
@@ -34,6 +41,18 @@ class MainActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION ),REQUEST_LOCATION_PERMISSION)
     }
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NotificationService.CHANNEL_ID,
+                "Out of Bounds",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = "Used for notifying if the device is out of the geo-fence"
 
+            val notificationManager = ContextCompat.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
 }
