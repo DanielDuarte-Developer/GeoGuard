@@ -16,12 +16,13 @@
 
         <ImageView
             android:id="@+id/imgProfilePic"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_weight="0.25"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <EditText
-            android:id="@+id/edUserName"
+        <TextView
+            android:id="@+id/txtUserName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.80"
@@ -32,7 +33,7 @@
             android:id="@+id/btnSair"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.20" />
+            android:layout_weight="0.25" />
     </LinearLayout>
 
     <TextView
@@ -144,6 +145,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.10"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnGuardarCriar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar/Criar" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
