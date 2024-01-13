@@ -11,18 +11,18 @@ import kotlinx.coroutines.flow.first
 import tvy.danielduarte.elderylocationprogram.ProfileObj
 
 class DataManager(private val context: Context) {
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     private suspend fun write (key: Int, value: ProfileObj){
         val dataStoreKey = stringPreferencesKey(key.toString())
         var valueJson = Gson().toJson(value)
-        dataStore.edit {
+        this.context.dataStore.edit {
                 settings -> settings[dataStoreKey] = valueJson
         }
     }
 
     private suspend fun read(key: Int): ProfileObj? {
         val dataStoreKey = stringPreferencesKey(key.toString())
-        val preferences = dataStore.data.first()
+        val preferences = this.context.dataStore.data.first()
 
         return preferences[dataStoreKey]?.let { jsonString ->
             Gson().fromJson(jsonString, ProfileObj::class.java)
