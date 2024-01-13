@@ -17,6 +17,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import tvy.danielduarte.elderylocationprogram.classes.GeoFenceObj
 import tvy.danielduarte.elderylocationprogram.classes.LocationServicesObj
@@ -48,16 +49,6 @@ class Settings : AppCompatActivity() {
 
     }
 
-    private suspend fun write (key: Int, value: ProfileObj){
-        val dataStoreKey = intPreferencesKey(key.toString())
-        dataStore.edit { settings -> settings[dataStoreKey] = value}
-    }
-
-    private suspend fun read (key: String): String? {
-        val dataStoreKey = stringPreferencesKey(key)
-        val preferences = dataStore.data.first()
-        return preferences.get(dataStoreKey)
-    }
 
     suspend fun buildProfile(view: View) {
         geoFenceObj= GeoFenceObj(locationService.currentLocation, center, radius)
@@ -66,7 +57,6 @@ class Settings : AppCompatActivity() {
         profile = ProfileObj(txtUserName, imgProfilePic, geoFenceObj, notificationType)
 
         var create = write(id,profile);
-
     }
 
     fun getCheckBoxesState(){
