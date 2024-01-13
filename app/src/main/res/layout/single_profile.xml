@@ -5,9 +5,11 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txtEscolherPerfil"
+        android:id="@+id/txtPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Perfil"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:onClick="chooseProfile"
+        android:clickable="true"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

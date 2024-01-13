@@ -9,28 +9,31 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import tvy.danielduarte.elderylocationprogram.classes.DataManager
 import tvy.danielduarte.elderylocationprogram.classes.NotificationService
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var dataStore: DataStore<Preferences>
     private val REQUEST_LOCATION_PERMISSION = 1
 
-    private lateinit var textView: TextView
-
+    private val dataManager = DataManager(this)
+    private var profilesList: MutableList<ProfileObj> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        textView = findViewById<TextView>(R.id.textView);
+
         checkPerms()
         createNotificationChannel()
+        settingsToList(profilesList)
+
     }
 
     private fun checkPerms(){
@@ -58,7 +61,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun criarPerfil(view: View) {
+    private fun settingsToList(profilesList:MutableList<ProfileObj>){
+        dataManager.read() // passar para uma lista
+        showProfiles()
+    }
+
+    private fun showProfiles() {
+
+        var lnPerfil = findViewById<LinearLayout>(R.id.lnPerfil)
+        lnPerfil.removeAllViews()
+
+        profilesList.forEach{
+            val profile:ProfileObj = it
+            val txtPerfil = layoutInflater.inflate(R.layout.single_profile, null)
+            txtPerfil.findViewById<TextView>(R.id.txtPerfil).text = profile.name
+            txtPerfil.setOnClickListener {
+                val inte = Intent(this, Profile::class.java)
+                inte.putExtra("profile", profile)
+                startActivity(inte)
+            }
+            lnPerfil.addView(txtPerfil)
+        }
+
+    }
+
+    fun createProfile(view: View) {
         val inte = Intent(this, Settings::class.java)
         startActivity(inte)
     }

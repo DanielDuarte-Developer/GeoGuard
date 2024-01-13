@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+
     namespace = "tvy.danielduarte.elderylocationprogram"
     compileSdk = 34
 
@@ -34,6 +35,7 @@ android {
         jvmTarget = "1.8"
     }
 }
+
 
 dependencies {
     implementation("com.google.android.gms:play-services-location:18.0.0")
