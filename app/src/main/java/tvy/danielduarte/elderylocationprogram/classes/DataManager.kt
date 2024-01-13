@@ -12,7 +12,7 @@ import tvy.danielduarte.elderylocationprogram.ProfileObj
 
 class DataManager(private val context: Context) {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-    private suspend fun write (key: Int, value: ProfileObj){
+    suspend fun write (key: Int, value: ProfileObj){
         val dataStoreKey = stringPreferencesKey(key.toString())
         var valueJson = Gson().toJson(value)
         this.context.dataStore.edit {
@@ -20,7 +20,7 @@ class DataManager(private val context: Context) {
         }
     }
 
-    private suspend fun read(key: Int): ProfileObj? {
+    suspend fun read(key: Int): ProfileObj? {
         val dataStoreKey = stringPreferencesKey(key.toString())
         val preferences = this.context.dataStore.data.first()
 
