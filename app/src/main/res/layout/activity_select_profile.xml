@@ -5,19 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SelecaoPerfil">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/lnPerfil"
         android:layout_width="match_parent"
-        android:layout_height="0"
+        android:layout_height="0dp"
         android:layout_weight=".66"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtPerfil"
             android:layout_width="match_parent"
-            android:layout_height="0"
+            android:layout_height="0dp"
             android:layout_weight=".33"
             android:textAlignment="center"
             android:textSize="30dp"

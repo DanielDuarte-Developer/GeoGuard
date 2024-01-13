@@ -14,6 +14,7 @@ import androidx.core.view.drawToBitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
@@ -26,7 +27,8 @@ class Settings : AppCompatActivity() {
 
     private lateinit var locationService: LocationServicesObj
     private lateinit var center: Location
-    private var radius: Float ?= null
+    private var radius: Float = 0.0f
+    private var id: Int = 1;
 
     private lateinit var geoFenceObj: GeoFenceObj
     private lateinit var notificationType: NotificationTypeObj
@@ -46,22 +48,24 @@ class Settings : AppCompatActivity() {
 
     }
 
-    private suspend fun write (key: String, value: String){
-        val dataStoreKey = stringPreferencesKey(key)
+    private suspend fun write (key: Int, value: ProfileObj){
+        val dataStoreKey = intPreferencesKey(key.toString())
         dataStore.edit { settings -> settings[dataStoreKey] = value}
     }
 
-    private suspend fun read (key: String): {
+    private suspend fun read (key: String): String? {
         val dataStoreKey = stringPreferencesKey(key)
         val preferences = dataStore.data.first()
         return preferences.get(dataStoreKey)
     }
 
-    fun saveOrCreateProfile(view: View) {
+    suspend fun buildProfile(view: View) {
         geoFenceObj= GeoFenceObj(locationService.currentLocation, center, radius)
         getCheckBoxesState()
 
         profile = ProfileObj(txtUserName, imgProfilePic, geoFenceObj, notificationType)
+
+        var create = write(id,profile);
 
     }
 

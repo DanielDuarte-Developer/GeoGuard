@@ -4,9 +4,11 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -14,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import tvy.danielduarte.elderylocationprogram.classes.NotificationService
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,6 +56,11 @@ class MainActivity : AppCompatActivity() {
             val notificationManager = ContextCompat.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
+    fun criarPerfil(view: View) {
+        val inte = Intent(this, Settings::class.java)
+        startActivity(inte)
     }
 
 }
