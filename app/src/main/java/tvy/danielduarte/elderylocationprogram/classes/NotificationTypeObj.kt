@@ -13,16 +13,21 @@ class NotificationTypeObj(Message:Boolean, Email:Boolean, Notification:Boolean) 
     var notification:Boolean = Notification
 
     fun sendMessage(){
+        if (message == true){
 
+        }
     }
 
     fun sendEmail(){
+        if (email == true){
 
+        }
     }
 
-    fun sendNotification(message:String){
-
+    fun sendNotification(message:String, context: Context){
+        if (notification == true){
+            var notificationService = NotificationService(context)
+            notificationService.showNotification(message)
+        }
     }
-
-
 }
