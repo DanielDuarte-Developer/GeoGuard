@@ -1,6 +1,7 @@
 package tvy.danielduarte.elderylocationprogram
 
 import android.Manifest
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -14,11 +15,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import tvy.danielduarte.elderylocationprogram.classes.DataManager
 import tvy.danielduarte.elderylocationprogram.classes.NotificationService
-import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +45,8 @@ class MainActivity : AppCompatActivity() {
     }
     private fun askPerms(){
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION ),REQUEST_LOCATION_PERMISSION)
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),REQUEST_LOCATION_PERMISSION)
+        checkPerms()
     }
     private fun createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -56,13 +57,17 @@ class MainActivity : AppCompatActivity() {
             )
             channel.description = "Used for notifying if the device is out of the geo-fence"
 
-            val notificationManager = ContextCompat.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
 
     private fun settingsToList(profilesList:MutableList<ProfileObj>){
-        dataManager.read() // passar para uma lista
+        lifecycleScope.launch{
+            for (i in 1..dataManager.size())
+                dataManager.read(i)?.let { profilesList.add(it) }
+        }
+
         showProfiles()
     }
 
