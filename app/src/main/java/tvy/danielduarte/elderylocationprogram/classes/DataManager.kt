@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import tvy.danielduarte.elderylocationprogram.ProfileObj
 
@@ -27,6 +28,16 @@ class DataManager(private val context: Context) {
         return preferences[dataStoreKey]?.let { jsonString ->
             Gson().fromJson(jsonString, ProfileObj::class.java)
         }
+    }
+
+    suspend fun size(): Int{
+        var count = 0
+
+        this.context.dataStore.data.collect { preferences ->
+            count++
+        }
+
+        return count
     }
 
 }
