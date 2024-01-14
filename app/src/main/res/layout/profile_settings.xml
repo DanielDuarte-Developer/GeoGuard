@@ -11,8 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="40dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imgProfilePic"
@@ -21,19 +20,45 @@
             android:layout_weight="0.25"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/txtUserName"
+        <EditText
+            android:id="@+id/edUserName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.80"
             android:textAlignment="center"
             android:textSize="20dp"
             android:text="Utilizador" />
+
         <Button
             android:id="@+id/btnSair"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/edEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:textAlignment="center"
+            android:hint="Email"/>
+
+        <EditText
+            android:id="@+id/edContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="phone"
+            android:textAlignment="center"
+            android:hint="Nº Telefone"/>
     </LinearLayout>
 
     <TextView
@@ -60,9 +85,17 @@
             android:text="Localização" />
 
         <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView2"
+            android:id="@+id/mapView"
             android:layout_width="129dp"
             android:layout_height="130dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Raio" />
+
         <SeekBar
             android:id="@+id/seekBarRadius"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
@@ -78,7 +111,7 @@
         android:id="@+id/txtTipoNotificacao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:textAlignment="center"
         android:text="Definir Notificação" />
 
@@ -150,7 +183,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnGuardarCriar"
+            android:id="@+id/btnBuild"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Guardar/Criar"
