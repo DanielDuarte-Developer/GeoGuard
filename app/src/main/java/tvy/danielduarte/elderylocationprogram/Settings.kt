@@ -19,6 +19,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
+import tvy.danielduarte.elderylocationprogram.classes.DataManager
 import tvy.danielduarte.elderylocationprogram.classes.GeoFenceObj
 import tvy.danielduarte.elderylocationprogram.classes.LocationServicesObj
 import tvy.danielduarte.elderylocationprogram.classes.NotificationTypeObj
@@ -36,6 +37,7 @@ class Settings : AppCompatActivity() {
 
     private val txtUserName: String = findViewById<TextView>(R.id.txtUserName).toString()
     private val imgProfilePic: Bitmap = findViewById<ImageView>(R.id.imgProfilePic).drawToBitmap()
+    private val dataManager: DataManager = DataManager(this);
 
 
     private lateinit var profile: ProfileObj
@@ -55,8 +57,7 @@ class Settings : AppCompatActivity() {
         getCheckBoxesState()
 
         profile = ProfileObj(txtUserName, imgProfilePic, geoFenceObj, notificationType)
-
-        var create = write(id,profile);
+        var create = dataManager.write(id,profile);
     }
 
     fun getCheckBoxesState(){

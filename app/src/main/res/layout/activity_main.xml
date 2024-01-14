@@ -21,7 +21,7 @@
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.80"
@@ -29,7 +29,7 @@
             android:textSize="20dp"
             android:text="TextView" />
         <Button
-            android:id="@+id/btnSair"
+            android:id="@+id/btnSettings"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.20" />
@@ -48,10 +48,13 @@
             android:textSize="30dp"
             android:text="Localização Atual" />
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView3"
+        <androidx.fragment.app.FragmentContainerView
+            xmlns:tomtom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/map_fragment"
+            android:name="com.tomtom.sdk.map.display.ui.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tomtom:mapKey="73G2QplNHyN7Bi8UEMvWAVMHqvKHhxcO" />
     </LinearLayout>
 
 
