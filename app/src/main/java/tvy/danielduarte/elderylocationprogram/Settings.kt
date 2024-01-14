@@ -3,78 +3,117 @@ package tvy.danielduarte.elderylocationprogram
 import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.SeekBar
-import android.widget.TextView
 import androidx.core.view.drawToBitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.google.gson.Gson
-import kotlinx.coroutines.flow.first
+import com.google.android.gms.maps.MapView
 import tvy.danielduarte.elderylocationprogram.classes.DataManager
 import tvy.danielduarte.elderylocationprogram.classes.GeoFenceObj
-import tvy.danielduarte.elderylocationprogram.classes.LocationServicesObj
 import tvy.danielduarte.elderylocationprogram.classes.NotificationTypeObj
 
 class Settings : AppCompatActivity() {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-    private lateinit var locationService: LocationServicesObj
-    private lateinit var center: Location
-    private var radius: Float = 0.0f
-    private var id: Int = 1;
+    private var profile: ProfileObj? = null
+    private var modifiedProfileIndex:Int = -1
 
-    private lateinit var geoFenceObj: GeoFenceObj
-    private lateinit var notificationType: NotificationTypeObj
+    private val imgProfilePic = findViewById<ImageView>(R.id.imgProfilePic)
 
-    private val txtUserName: String = findViewById<TextView>(R.id.txtUserName).toString()
-    private val imgProfilePic: Bitmap = findViewById<ImageView>(R.id.imgProfilePic).drawToBitmap()
-    private val dataManager: DataManager = DataManager(this);
+    private val edUserName = findViewById<EditText>(R.id.edUserName)
+    private val edEmail = findViewById<EditText>(R.id.edEmail)
+    private val edContact = findViewById<EditText>(R.id.edContact)
 
+    private val mapView = findViewById<MapView>(R.id.mapView)
+    private val seekBarRadius = findViewById<SeekBar>(R.id.seekBarRadius)
 
-    private lateinit var profile: ProfileObj
+    private val chckBxSmsState = findViewById<CheckBox>(R.id.chckBxSms)
+    private val chckBxEmail = findViewById<CheckBox>(R.id.chckBxEmail)
+    private val chckBxNotification = findViewById<CheckBox>(R.id.chckBxNotification)
+
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+    private val dataManager: DataManager = DataManager(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_settings)
-        locationService = LocationServicesObj(false)
 
-        //radius
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            profile = intent.getSerializableExtra("profile", ProfileObj::class.java)
+        }
+        else {
+            intent.getSerializableExtra("profile") as  ProfileObj
+        }
+        isProfileNull()
 
-
+        changeBtnBuildText()
     }
 
 
     suspend fun buildProfile(view: View) {
-        geoFenceObj= GeoFenceObj(locationService.currentLocation, center, radius)
-        getCheckBoxesState()
 
-        profile = ProfileObj(txtUserName, imgProfilePic, geoFenceObj, notificationType)
-        var create = dataManager.write(id,profile);
+        modifiedProfileIndex()
+
+        val center:Location = mapView
+        val radius: Float = seekBarRadius.progress.toFloat()
+        val geofence = GeoFenceObj(currentLocation, center, radius)
+
+        val notificationType = NotificationTypeObj(chckBxSmsState.isChecked, chckBxEmail.isChecked, chckBxNotification.isChecked)
+
+        val userName:String = edUserName.toString()
+        val image:Bitmap = imgProfilePic.drawToBitmap()
+        val contact: Int = edContact.text.toString().toInt()
+        val email: String = edEmail.text.toString()
+        val profile = ProfileObj(userName, image, contact, email, geofence, notificationType)
+
+        if (isProfileNull()){
+            dataManager.write(dataManager.size(),profile)
+        }
+        else{
+            dataManager.write(modifiedProfileIndex,profile)
+
+        }
+
     }
 
-    fun getCheckBoxesState(){
-        val chckBxSmsState = findViewById<CheckBox>(R.id.chckBxSms).isChecked
-        val chckBxEmail = findViewById<CheckBox>(R.id.chckBxEmail).isChecked
-        val chckBxNotification = findViewById<CheckBox>(R.id.chckBxNotification).isChecked
-        notificationType = NotificationTypeObj(chckBxSmsState, chckBxEmail, chckBxNotification)
+    private fun changeBtnBuildText(){
+        val btnBuild = findViewById<Button>(R.id.btnBuild)
 
+        if (isProfileNull()){
+            btnBuild.text = "Criar Perfil"
+        }
+        else {
+            btnBuild.text = "Guardar Mudanças"
+        }
     }
 
-    fun getCenterCoordinates(){
-
+    private fun isProfileNull(): Boolean {
+        var isProfileNull:Boolean
+        if (profile == null){
+            isProfileNull = true
+        }
+        else {
+            isProfileNull = false
+        }
+        return isProfileNull
     }
 
-    fun getRadiusValue(){
-        val seekBarRadiusValue = findViewById<SeekBar>(R.id.seekBarRadius).progress
-        radius = seekBarRadiusValue as Float
-    }
+    private suspend fun modifiedProfileIndex(){
+        if (!isProfileNull()){
+            for (i in 1..dataManager.size()){
+                if (dataManager.read(i) == profile){
+                    modifiedProfileIndex = i
+                }
 
+            }
+        }
+    }
 }
