@@ -7,13 +7,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tomtom.sdk.map.display.TomTomMap
 import com.tomtom.sdk.map.display.ui.MapFragment
-import org.w3c.dom.Text
 import tvy.danielduarte.elderylocationprogram.classes.LocationServicesObj
+import tvy.danielduarte.elderylocationprogram.classes.MapService
 
 class Profile : AppCompatActivity() {
     var profile: ProfileObj? = null
     private lateinit var tomtomMap: TomTomMap;
-    private var location: LocationServicesObj = LocationServicesObj(true)
+    private var mapService:MapService = MapService(R.drawable.personpin)
+    private var location: LocationServicesObj = LocationServicesObj(true, mapService!!)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -33,10 +34,7 @@ class Profile : AppCompatActivity() {
 
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as? MapFragment
-        mapFragment?.getMapAsync { map ->
-            tomtomMap = map
-
-            location.updateMarkerPosition(52.379189,4.899431,tomtomMap, R.drawable.personpin)
-        }
+        mapService.startMap(mapFragment)
+        location.startLocationUpdatesEveryMinute()
     }
 }
