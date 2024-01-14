@@ -5,10 +5,7 @@ import android.content.Intent
 import android.telephony.SmsManager
 
 
-class NotificationTypeObj(SendMessage:Boolean, SendEmail:Boolean, SendNotification:Boolean, Contact: Int, Email: String) {
-
-    var contact:Int = Contact
-    var email:String = Email
+class NotificationTypeObj(SendMessage:Boolean, SendEmail:Boolean, SendNotification:Boolean,) {
 
     private var sendMessage:Boolean = SendMessage
     private var sendEmail:Boolean = SendEmail
