@@ -1,7 +1,6 @@
 package tvy.danielduarte.elderylocationprogram
 
 import android.Manifest
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -14,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import tvy.danielduarte.elderylocationprogram.classes.DataManager
@@ -91,8 +89,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun createProfile(view: View) {
-        val inte = Intent(this, Settings::class.java)
-        startActivity(inte)
+        val intent = Intent(this, Settings::class.java)
+        startActivity(intent)
     }
 
 }
