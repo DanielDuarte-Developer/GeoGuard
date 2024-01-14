@@ -34,6 +34,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
+
 }
 
 
@@ -47,7 +51,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("com.google.code.gson:gson:2.8.9")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.tomtom.sdk.maps:map-display:0.43.0")
 }
