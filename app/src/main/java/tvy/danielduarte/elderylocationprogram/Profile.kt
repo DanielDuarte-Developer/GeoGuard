@@ -3,6 +3,7 @@ package tvy.danielduarte.elderylocationprogram
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.tomtom.sdk.map.display.TomTomMap
@@ -12,9 +13,8 @@ import tvy.danielduarte.elderylocationprogram.classes.MapService
 
 class Profile : AppCompatActivity() {
     var profile: ProfileObj? = null
-    private lateinit var tomtomMap: TomTomMap;
-    private var mapService:MapService = MapService(R.drawable.personpin)
-    private var location: LocationServicesObj = LocationServicesObj(true, mapService!!)
+    private lateinit var mapService:MapService
+    private lateinit var location: LocationServicesObj
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,6 +27,10 @@ class Profile : AppCompatActivity() {
             profile = intent.getSerializableExtra("profile") as ProfileObj
         }
 
+
+
+
+        Log.d("LocationLast", location.currentLocation.toString())
         val textViewName = findViewById<TextView>(R.id.textName)
         val img = findViewById<ImageView>(R.id.imageVPerfilPic)
         textViewName.text = profile?.name
@@ -34,7 +38,9 @@ class Profile : AppCompatActivity() {
 
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as? MapFragment
-        mapService.startMap(mapFragment)
+        mapService = MapService(R.drawable.personpin)
+        location = LocationServicesObj(true, this)
+        mapService.startMap(mapFragment,location)
         location.startLocationUpdatesEveryMinute()
     }
 }

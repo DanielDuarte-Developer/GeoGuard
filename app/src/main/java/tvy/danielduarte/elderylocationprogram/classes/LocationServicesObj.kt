@@ -21,11 +21,6 @@ class LocationServicesObj {
         this.repetitiveUpdates = repetitiveUpdates
         this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     }
-    constructor(repetitiveUpdates: Boolean, mapService: MapService, activity: Activity){
-        this.mapService = mapService
-        this.repetitiveUpdates = repetitiveUpdates;
-        this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-    }
 
     @SuppressLint("MissingPermission", "SuspiciousIndentation")
     fun startLocationUpdatesEveryMinute() {
