@@ -2,10 +2,7 @@ package tvy.danielduarte.elderylocationprogram.classes
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.provider.ContactsContract.CommonDataKinds.Contactables
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
+import android.telephony.SmsManager
 
 
 class NotificationTypeObj(SendMessage:Boolean, SendEmail:Boolean, SendNotification:Boolean, Contact: Int, Email: String) {
@@ -17,9 +14,10 @@ class NotificationTypeObj(SendMessage:Boolean, SendEmail:Boolean, SendNotificati
     private var sendEmail:Boolean = SendEmail
     private var sendNotification:Boolean = SendNotification
 
-    fun sendMessage(){
-        if (sendMessage == true){
-
+    fun sendMessage(context: Context, contact: Int, message: String){
+        if (sendMessage == true) {
+            val smsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(contact.toString(),null, message, null, null)
         }
     }
 
@@ -32,8 +30,10 @@ class NotificationTypeObj(SendMessage:Boolean, SendEmail:Boolean, SendNotificati
                 putExtra(Intent.EXTRA_TEXT, message)
 
             }
-            context.startActivity(intent)
 
+            if (intent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(intent);
+            }
         }
     }
 
