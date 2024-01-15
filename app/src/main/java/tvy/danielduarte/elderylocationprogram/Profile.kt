@@ -27,10 +27,6 @@ class Profile : AppCompatActivity() {
             profile = intent.getSerializableExtra("profile") as ProfileObj
         }
 
-
-
-
-        Log.d("LocationLast", location.currentLocation.toString())
         val textViewName = findViewById<TextView>(R.id.textName)
         val img = findViewById<ImageView>(R.id.imageVPerfilPic)
         textViewName.text = profile?.name
@@ -42,5 +38,10 @@ class Profile : AppCompatActivity() {
         location = LocationServicesObj(true, this)
         mapService.startMap(mapFragment,location,this)
         location.startLocationUpdatesEveryMinute()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        location.stopLocationUpdates()
     }
 }

@@ -1,6 +1,7 @@
 package tvy.danielduarte.elderylocationprogram.classes
 
 import android.location.Location
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.tomtom.sdk.map.display.ui.MapFragment
 import com.tomtom.sdk.location.GeoPoint
@@ -21,6 +22,7 @@ class MapService {
 
     fun getCenterAsync(): CompletableFuture<Location> {
         centerUpdateFuture = CompletableFuture()
+        Log.d("VerifyCompletableFuture", "Center promise created")
         return centerUpdateFuture!!
     }
 
@@ -67,7 +69,7 @@ class MapService {
                 pinImage = ImageFactory.fromResource(idImageCenter)
             )
             tomtomMap.addMarker(marker)
-
+            Log.d("VerifyCompletableFuture", "getCenterByLongClickEvent callback")
             centerUpdateFuture?.complete(center)
             return@addMapLongClickListener true
         }

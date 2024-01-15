@@ -1,6 +1,7 @@
 package tvy.danielduarte.elderylocationprogram
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.location.Location
 import android.os.Build
@@ -17,36 +18,28 @@ import androidx.core.view.drawToBitmap
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.tomtom.sdk.map.display.ui.MapFragment
 import com.tomtom.sdk.map.display.ui.compass.CompassButton
 import com.tomtom.sdk.map.display.ui.currentlocation.CurrentLocationButton
+import kotlinx.coroutines.launch
 import tvy.danielduarte.elderylocationprogram.classes.DataManager
+import tvy.danielduarte.elderylocationprogram.classes.DataManagerFile
 import tvy.danielduarte.elderylocationprogram.classes.GeoFenceObj
 import tvy.danielduarte.elderylocationprogram.classes.LocationServicesObj
 import tvy.danielduarte.elderylocationprogram.classes.MapService
 import tvy.danielduarte.elderylocationprogram.classes.NotificationTypeObj
+import kotlin.math.log
 
 class Settings : AppCompatActivity() {
 
     private var profile: ProfileObj? = null
-    private var modifiedProfileIndex:Int = -1
+    private var modifiedProfileIndex:Long = -1
     private lateinit var location: LocationServicesObj
-
-    private var imgProfilePic:ImageView? = null
-
-    private var edUserName:EditText? = null
-    private var edEmail:EditText? = null
-    private var edContact:EditText? = null
     private lateinit var mapService: MapService
-
-    private var seekBarRadius:SeekBar? = null
-
-    private var chckBxSmsState:CheckBox? = null
-    private var chckBxEmail: CheckBox? = null
-    private var chckBxNotification:CheckBox? = null
-
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-    private val dataManager: DataManager = DataManager(this)
+    private lateinit var dataManager: DataManagerFile
+    private var filePath: String  = ""
+     var geofence: GeoFenceObj ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,58 +47,79 @@ class Settings : AppCompatActivity() {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             profile = intent.getSerializableExtra("profile", ProfileObj::class.java)
+            filePath = intent.getStringExtra("filePath")!!
         }
         else {
-            intent.getSerializableExtra("profile") as  ProfileObj
+            profile = intent.getSerializableExtra("profile") as  ProfileObj
+            filePath = intent.getStringExtra("filePath")!!
         }
+
+        dataManager = DataManagerFile(this,filePath)
+
         location =  LocationServicesObj(true, this)
-
-        imgProfilePic = findViewById<ImageView>(R.id.imgProfilePic)
-        edUserName = findViewById<EditText>(R.id.edUserName)
-        edEmail = findViewById<EditText>(R.id.edEmail)
-        edContact = findViewById<EditText>(R.id.edContact)
-        seekBarRadius = findViewById<SeekBar>(R.id.seekBarRadius)
-        chckBxSmsState = findViewById<CheckBox>(R.id.chckBxSms)
-        chckBxEmail = findViewById<CheckBox>(R.id.chckBxEmail)
-        chckBxNotification = findViewById<CheckBox>(R.id.chckBxNotification)
-
-        isProfileNull()
-
-        changeBtnBuildText()
+        location.startLocationUpdatesEveryMinute()
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment
         mapService = MapService(R.drawable.personpin,R.drawable.center)
         mapService.startMap(mapFragment,location,this)
 
-    }
-
-
-    suspend fun buildProfile(view: View) {
-
-        modifiedProfileIndex()
-        val radius: Float = seekBarRadius!!.progress.toFloat()
-        var profile:ProfileObj ?= null
-
-        location.getCurrentLocationAsync().thenAccept{ newCurrentLocation ->
+        location.getCurrentLocationAsync().thenAccept { newCurrentLocation ->
+            Log.d("verifyData", "Current Location $newCurrentLocation")
             mapService.getCenterAsync().thenAccept { newCenter ->
-                val geofence = GeoFenceObj(newCurrentLocation, newCenter, radius)
-
-                val notificationType = NotificationTypeObj(chckBxSmsState!!.isChecked, chckBxEmail!!.isChecked, chckBxNotification!!.isChecked)
-
-                val userName:String = edUserName.toString()
-                val image:Bitmap = imgProfilePic!!.drawToBitmap()
-                val contact: Int = edContact!!.text.toString().toInt()
-                val email: String = edEmail!!.text.toString()
-                profile = ProfileObj(userName, image, contact, email, geofence, notificationType)
+                Log.d("verifyData", "Center $newCenter")
+                val seekBarRadius = findViewById<SeekBar>(R.id.seekBarRadius)
+                val radius: Float = seekBarRadius!!.progress.toFloat()
+                geofence = GeoFenceObj(newCurrentLocation, newCenter, radius)
             }
         }
-        if (isProfileNull()){
-            dataManager.write(dataManager.size(), profile!!)
-        }
-        else{
-            dataManager.write(modifiedProfileIndex, profile!!)
+
+        isProfileNull()
+        changeBtnBuildText()
+
+    }
+
+    fun buildProfile(view: View) {
+        val imgProfilePic = findViewById<ImageView>(R.id.imgProfilePic)
+        val edUserName = findViewById<EditText>(R.id.edUserName)
+        val edEmail = findViewById<EditText>(R.id.edEmail)
+        val edContact = findViewById<EditText>(R.id.edContact)
+        val chckBxSmsState = findViewById<CheckBox>(R.id.chckBxSms)
+        val chckBxEmail = findViewById<CheckBox>(R.id.chckBxEmail)
+        val chckBxNotification = findViewById<CheckBox>(R.id.chckBxNotification)
+
+        modifiedProfileIndex()
+
+        Log.d("GeofenceTeste", " Geofence: "+ geofence+"Center : " + geofence?.center + " CurrentanteLocation: " + geofence?.currentLocation)
+
+        val notificationType = NotificationTypeObj(
+            chckBxSmsState!!.isChecked,
+            chckBxEmail!!.isChecked,
+            chckBxNotification!!.isChecked
+        )
+
+        val userName: String = edUserName.text.toString()
+        val image: Bitmap = imgProfilePic!!.drawToBitmap()
+        val contact: Int = edContact!!.text.toString().toInt()
+        val email: String = edEmail!!.text.toString()
+
+        if(geofence != null){
+            var profile = ProfileObj(userName, image, contact, email, geofence, notificationType)
+            Log.d("GeofenceTeste", " Profile: "+ profile +"Center : " + profile.geoFenceObj?.center + " CurrentanteLocation: " + profile.geoFenceObj?.currentLocation)
+            if (isProfileNull()) {
+                dataManager.write(dataManager.size() + 1 , profile)
+            } else {
+                dataManager.write(modifiedProfileIndex, profile)
+            }
+
         }
 
+        if(profile != null){
+            Log.d("AGBS","Entrei no Intent")
+            val intent = Intent(this, Profile::class.java)
+            intent.putExtra("profile",profile)
+            startActivity(intent)
+        }
 
+        Log.d("wadw", "Click Done")
     }
 
     private fun changeBtnBuildText(){
@@ -130,7 +144,7 @@ class Settings : AppCompatActivity() {
         return isProfileNull
     }
 
-    private suspend fun modifiedProfileIndex(){
+    private fun modifiedProfileIndex(){
         if (!isProfileNull()){
             for (i in 1..dataManager.size()){
                 if (dataManager.read(i) == profile){
@@ -140,4 +154,6 @@ class Settings : AppCompatActivity() {
             }
         }
     }
+
+
 }

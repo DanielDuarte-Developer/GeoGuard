@@ -27,6 +27,7 @@ class LocationServicesObj {
 
     fun getCurrentLocationAsync(): CompletableFuture<Location> {
         currentLocationUpdateFuture = CompletableFuture()
+        Log.d("VerifyCompletableFuture", "CurrentLocation promise created")
         return currentLocationUpdateFuture!!
     }
 
@@ -48,7 +49,7 @@ class LocationServicesObj {
             super.onLocationResult(locationResult)
             if (locationResult.lastLocation != null) {
                 currentLocation = locationResult.lastLocation!!
-
+                Log.d("VerifyCompletableFuture", "getCurrentLocation callback")
                 currentLocationUpdateFuture?.complete(currentLocation)
 
                 if (repetitiveUpdates == false){

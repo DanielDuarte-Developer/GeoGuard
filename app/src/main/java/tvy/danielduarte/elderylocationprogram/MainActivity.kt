@@ -8,21 +8,22 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import tvy.danielduarte.elderylocationprogram.classes.DataManager
+import tvy.danielduarte.elderylocationprogram.classes.DataManagerFile
 import tvy.danielduarte.elderylocationprogram.classes.NotificationService
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
     private val REQUEST_LOCATION_PERMISSION = 1
 
-    private val dataManager = DataManager(this)
+    private val dataManager = DataManagerFile(this, "profile_data_1.json")
     private var profilesList: MutableList<ProfileObj> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +31,6 @@ class MainActivity : AppCompatActivity() {
 
         checkPerms()
         createNotificationChannel()
-
-
         settingsToList(profilesList)
 
     }
@@ -63,10 +62,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun settingsToList(profilesList:MutableList<ProfileObj>){
-        lifecycleScope.launch{
-            for (i in 1..dataManager.size())
-                dataManager.read(i)?.let { profilesList.add(it) }
-        }
+        for (i in 1..dataManager.size())
+            dataManager.read(i)?.let { profilesList.add(it) }
+
+        Log.d("Profile" ,"ListSize " + profilesList.size)
+
+        Log.d("Profile", "Username " + profilesList.get(5).name + " Image " + profilesList.get(5).image + " Contacto " + profilesList.get(5).contact
+                +" Email: " + profilesList.get(5).email + " Geofence :  Center" + profilesList.get(5).geoFenceObj!!.center + " CurrentLocation "+ profilesList.get(5).geoFenceObj!!.currentLocation
+                + " Radius" + profilesList.get(5).geoFenceObj!!.radius + " NotificationType: " + profilesList.get(5).notificationType)
+
 
         showProfiles()
     }
@@ -78,9 +82,10 @@ class MainActivity : AppCompatActivity() {
 
         profilesList.forEach{
             val profile:ProfileObj = it
-            val txtPerfil = layoutInflater.inflate(R.layout.single_profile, null)
+            val txtPerfil = LayoutInflater.from(this).inflate(R.layout.single_profile, null)
             txtPerfil.findViewById<TextView>(R.id.txtPerfil).text = profile.name
             txtPerfil.setOnClickListener {
+                Log.d("ClickListener", profile.name)
                 val inte = Intent(this, Profile::class.java)
                 inte.putExtra("profile", profile)
                 startActivity(inte)
@@ -92,6 +97,10 @@ class MainActivity : AppCompatActivity() {
 
     fun createProfile(view: View) {
         val intent = Intent(this, Settings::class.java)
+        if(profilesList.size > 0){
+            intent.putExtra("profileList", profilesList as Serializable)
+        }
+        intent.putExtra("filePath", "profile_data_1.json" )
         startActivity(intent)
     }
 

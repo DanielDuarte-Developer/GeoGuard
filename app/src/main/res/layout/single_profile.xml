@@ -8,8 +8,8 @@
         android:id="@+id/txtPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="30dp"
         android:text="Perfil"
         android:textAlignment="center"
-        android:onClick="chooseProfile"
         android:clickable="true"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

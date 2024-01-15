@@ -1,6 +1,7 @@
 package tvy.danielduarte.elderylocationprogram.classes
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -10,8 +11,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
 import tvy.danielduarte.elderylocationprogram.ProfileObj
+import java.io.Serializable
 
-class DataManager(private val context: Context) {
+class DataManager(private val context: Context) : Serializable{
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     suspend fun write (key: Int, value: ProfileObj){
         val dataStoreKey = stringPreferencesKey(key.toString())
