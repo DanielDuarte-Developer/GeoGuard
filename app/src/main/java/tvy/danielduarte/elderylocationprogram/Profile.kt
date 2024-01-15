@@ -17,7 +17,7 @@ class Profile : AppCompatActivity() {
     private lateinit var location: LocationServicesObj
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_select_profile)
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ){
 
@@ -40,7 +40,7 @@ class Profile : AppCompatActivity() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment
         mapService = MapService(R.drawable.personpin)
         location = LocationServicesObj(true, this)
-        mapService.startMap(mapFragment,location)
+        mapService.startMap(mapFragment,location,this)
         location.startLocationUpdatesEveryMinute()
     }
 }

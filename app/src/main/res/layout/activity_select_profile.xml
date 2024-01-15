@@ -1,42 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:padding="15dp"
+    tools:context=".Profile">
 
     <LinearLayout
-        android:id="@+id/lnPerfil"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".66"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="40dp">
+
+        <ImageView
+            android:id="@+id/imageVPerfilPic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.80"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:text="TextView" />
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.20" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtEscolherPerfil"
+            android:id="@+id/textView4"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".33"
             android:textAlignment="center"
-            android:textSize="30dp"
-            android:text="Escolher Perfil" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lnCriarPerfil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btnCriarPerfil"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Criar Perfil"
-            android:onClick="createProfile"/>
+            android:textSize="30dp"
+            android:text="Localização Atual" />
+
+        <androidx.fragment.app.FragmentContainerView
+            xmlns:tomtom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/map_fragment"
+            android:name="com.tomtom.sdk.map.display.ui.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tomtom:mapKey="73G2QplNHyN7Bi8UEMvWAVMHqvKHhxcO" />
+
     </LinearLayout>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+
+</LinearLayout>

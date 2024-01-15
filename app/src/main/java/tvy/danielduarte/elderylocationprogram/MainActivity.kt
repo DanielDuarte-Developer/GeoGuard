@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         checkPerms()
         createNotificationChannel()
+
+
         settingsToList(profilesList)
 
     }

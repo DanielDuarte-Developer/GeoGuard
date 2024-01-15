@@ -1,11 +1,15 @@
 package tvy.danielduarte.elderylocationprogram.classes
 
 import android.location.Location
+import androidx.appcompat.app.AppCompatActivity
 import com.tomtom.sdk.map.display.ui.MapFragment
 import com.tomtom.sdk.location.GeoPoint
 import com.tomtom.sdk.map.display.TomTomMap
 import com.tomtom.sdk.map.display.image.ImageFactory
 import com.tomtom.sdk.map.display.marker.MarkerOptions
+import com.tomtom.sdk.map.display.ui.compass.CompassButton
+import com.tomtom.sdk.map.display.ui.currentlocation.CurrentLocationButton
+import tvy.danielduarte.elderylocationprogram.Settings
 import java.util.concurrent.CompletableFuture
 
 class MapService {
@@ -29,13 +33,17 @@ class MapService {
         this.idImageCenter = idImageCenter
     }
 
-    fun startMap(mapFragment: MapFragment,locationServicesObj: LocationServicesObj){
+    fun startMap(mapFragment: MapFragment,locationServicesObj: LocationServicesObj,  activity: AppCompatActivity){
         mapFragment.getMapAsync { map ->
             tomtomMap = map
-            locationServicesObj.currentLocation.let {
-                updateMarkerPosition(it.latitude, it.longitude)
-                getCenterByLongClickEvent()
+            mapFragment.compassButton.visibilityPolicy = CompassButton.VisibilityPolicy.Invisible
+            mapFragment.currentLocationButton.visibilityPolicy = CurrentLocationButton.VisibilityPolicy.Invisible
+            if (activity !is Settings) {
+                locationServicesObj.currentLocation.let {
+                    updateMarkerPosition(it.latitude, it.longitude)
+                }
             }
+            getCenterByLongClickEvent()
         }
     }
 
