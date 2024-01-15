@@ -37,7 +37,7 @@ class Profile : AppCompatActivity() {
         img.setImageBitmap(profile?.image)
 
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as? MapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as MapFragment
         mapService = MapService(R.drawable.personpin)
         location = LocationServicesObj(true, this)
         mapService.startMap(mapFragment,location)

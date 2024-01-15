@@ -3,6 +3,7 @@ package tvy.danielduarte.elderylocationprogram.classes
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.location.Location
+import android.os.Looper
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -10,27 +11,35 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import java.util.concurrent.CompletableFuture
 
 class LocationServicesObj {
     var repetitiveUpdates: Boolean ?= null
     private var fusedLocationClient: FusedLocationProviderClient
-    var currentLocation: Location ?= null
-    private var mapService: MapService ?= null
+    var currentLocation: Location = Location("")
+    private var currentLocationUpdateFuture: CompletableFuture<Location>? = null
+
 
     constructor(repetitiveUpdates: Boolean, activity: Activity){
         this.repetitiveUpdates = repetitiveUpdates
         this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
     }
 
-    @SuppressLint("MissingPermission", "SuspiciousIndentation")
-    fun startLocationUpdatesEveryMinute() {
-        val locationRequest = LocationRequest.Builder(6000)
-            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-            .build()
-        fusedLocationClient.requestLocationUpdates(locationRequest, getCurrentLocation, null)
+    fun getCurrentLocationAsync(): CompletableFuture<Location> {
+        currentLocationUpdateFuture = CompletableFuture()
+        return currentLocationUpdateFuture!!
     }
 
-    private fun stopLocationUpdates() {
+    @SuppressLint("MissingPermission", "SuspiciousIndentation")
+    fun startLocationUpdatesEveryMinute() {
+        val locationRequest = LocationRequest.Builder(120000)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .build()
+        fusedLocationClient.requestLocationUpdates(locationRequest, getCurrentLocation, Looper.getMainLooper())
+    }
+
+
+    fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(getCurrentLocation)
     }
 
@@ -40,7 +49,7 @@ class LocationServicesObj {
             if (locationResult.lastLocation != null) {
                 currentLocation = locationResult.lastLocation!!
 
-                Log.d("LocationsTeste", "Latitude: "+currentLocation!!.latitude.toString()+" Longitude: " + currentLocation!!.longitude)
+                currentLocationUpdateFuture?.complete(currentLocation)
 
                 if (repetitiveUpdates == false){
                     stopLocationUpdates()
@@ -49,7 +58,4 @@ class LocationServicesObj {
             }
         }
     }
-
-
-
 }

@@ -1,27 +1,45 @@
 package tvy.danielduarte.elderylocationprogram.classes
 
+import android.location.Location
 import com.tomtom.sdk.map.display.ui.MapFragment
 import com.tomtom.sdk.location.GeoPoint
 import com.tomtom.sdk.map.display.TomTomMap
 import com.tomtom.sdk.map.display.image.ImageFactory
 import com.tomtom.sdk.map.display.marker.MarkerOptions
+import java.util.concurrent.CompletableFuture
 
-class MapService (idImage: Int){
+class MapService {
     private lateinit var tomtomMap: TomTomMap;
-    private var idImage = idImage
+    private var idImage = 0
+    private var center:Location = Location("")
+    private var idImageCenter = 0
+    private var centerUpdateFuture: CompletableFuture<Location>? = null
 
-    fun startMap(mapFragment: MapFragment?,locationServicesObj: LocationServicesObj){
-        mapFragment?.getMapAsync { map ->
+    fun getCenterAsync(): CompletableFuture<Location> {
+        centerUpdateFuture = CompletableFuture()
+        return centerUpdateFuture!!
+    }
+
+    constructor(idImageMarkerPerson: Int){
+        this.idImage = idImageMarkerPerson
+    }
+
+    constructor(idImageMarkerPerson: Int, idImageCenter: Int){
+        this.idImage = idImageMarkerPerson
+        this.idImageCenter = idImageCenter
+    }
+
+    fun startMap(mapFragment: MapFragment,locationServicesObj: LocationServicesObj){
+        mapFragment.getMapAsync { map ->
             tomtomMap = map
-
-            locationServicesObj.currentLocation?.let {
+            locationServicesObj.currentLocation.let {
                 updateMarkerPosition(it.latitude, it.longitude)
+                getCenterByLongClickEvent()
             }
-
-
         }
     }
-    fun updateMarkerPosition(newLatitude: Double, newLongitude: Double) {
+
+    private fun updateMarkerPosition(newLatitude: Double, newLongitude: Double) {
         if(tomtomMap != null){
             tomtomMap.removeMarkers()
             val marker = MarkerOptions(
@@ -30,5 +48,21 @@ class MapService (idImage: Int){
             )
             tomtomMap.addMarker(marker)
         }
+    }
+    fun getCenterByLongClickEvent(): Location {
+        tomtomMap.addMapLongClickListener{ coordinate: GeoPoint ->
+            center.latitude = coordinate.latitude
+            center.longitude = coordinate.longitude
+            tomtomMap.removeMarkers()
+            val marker = MarkerOptions(
+                coordinate = GeoPoint(coordinate.latitude, coordinate.longitude),
+                pinImage = ImageFactory.fromResource(idImageCenter)
+            )
+            tomtomMap.addMarker(marker)
+
+            centerUpdateFuture?.complete(center)
+            return@addMapLongClickListener true
+        }
+        return center
     }
 }
